@@ -155,7 +155,7 @@ input {
 }
 
 .upload-zone {
-    min-height: 90px;
+    min-height: 112px;
     border: 1px dashed #55515a;
     border-radius: 10px;
     display: flex;
@@ -342,32 +342,6 @@ input[type=range] {
     color: #747b87
 }
 
-.tip-card {
-    display: flex;
-    gap: 11px;
-    padding: 14px 16px;
-    margin: 14px 20px 18px;
-    background: #202229;
-    border: 1px solid #30343c;
-    border-radius: 10px
-}
-
-.tip-icon {
-    color: #e9c89a;
-    font-size: 18px
-}
-
-.tip-card strong {
-    font-size: 11px
-}
-
-.tip-card p {
-    font-size: 10px;
-    line-height: 1.5;
-    color: #9da2ad;
-    margin: 5px 0 0
-}
-
 @media(max-width:850px) {
     .workspace {
         grid-template-columns: 260px minmax(0, 1fr)
@@ -479,4 +453,88 @@ input[type=range] {
     line-height: 1.55;
     color: #818894;
     margin: 10px 0 0
+}
+
+
+/* Keep the app fixed to the browser viewport and scroll only the left settings panel. */
+html,
+body,
+#app {
+    height: 100%;
+    min-height: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    height: calc(100dvh - 82px);
+    overflow: hidden;
+}
+
+.sidebar {
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #555b66 #17191f;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #17191f;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #454a54;
+    border-radius: 8px;
+    border: 2px solid #17191f;
+}
+
+.viewport-panel {
+    min-height: 0;
+    overflow: hidden;
+}
+
+#viewport {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+}
+
+@media (max-width: 650px) {
+    .workspace {
+        height: calc(100dvh - 72px);
+        overflow: hidden;
+    }
+
+    .sidebar {
+        min-height: 0;
+        height: 42%;
+        flex: 0 0 42%;
+        overflow-y: auto;
+    }
+
+    .viewport-panel {
+        min-height: 0;
+        flex: 1 1 58%;
+    }
+
+    #viewport {
+        height: auto;
+        min-height: 0;
+    }
 }
