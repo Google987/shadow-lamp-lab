@@ -258,6 +258,9 @@ connectRange('lightHeight', 'lightHeightOut', v => v.toFixed(1), v => {
 connectRange('lightX', 'lightXOut', v => v.toFixed(1), v => {
   pointLight.position.x = v; bulb.position.x = v;
 });
+connectRange('lightDepth', 'lightDepthOut', v => v.toFixed(1), v => {
+  pointLight.position.z = v; bulb.position.z = v;
+});
 connectRange('brightness', 'brightnessOut', v => `${v}%`, v => {
   pointLight.intensity = v * 0.55;
 });
