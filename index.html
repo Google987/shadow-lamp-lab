@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadow Lamp Lab</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand-mark">SL</div>
+        <div class="brand-copy">
+          <h1>Shadow Lamp Lab</h1>
+          <p>Explore form, light, and projection</p>
+        </div>
+        <div class="top-actions">
+          <span class="local-pill"><span></span> Local workspace</span>
+          <button id="screenshotBtn" class="button button-light">Capture PNG</button>
+        </div>
+      </header>
+      <main class="workspace">
+        <aside class="sidebar">
+          <section class="panel">
+            <div class="section-heading"><span class="step">01</span><div><h2>Model</h2><p>Load a lamp to inspect</p></div></div>
+            <label class="upload-zone" for="modelFile">
+              <span class="upload-icon">↑</span>
+              <strong>Choose 3D model</strong>
+              <span>STL, OBJ, GLB, GLTF</span>
+              <input id="modelFile" type="file" accept=".stl,.obj,.glb,.gltf,.bin,.mtl" />
+            </label>
+            <div id="modelStatus" class="status-line">Showing the built-in demo lamp</div>
+            <button id="resetModelBtn" class="button button-outline full-width">Reset demo model</button>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><span class="step">02</span><div><h2>Light source</h2><p>Move light inside the shade</p></div></div>
+            <div class="control">
+              <div class="control-label"><label for="lightHeight">Height</label><output id="lightHeightOut">0.0</output></div>
+              <input id="lightHeight" type="range" min="-2" max="2" step="0.1" value="0" />
+            </div>
+            <div class="control">
+              <div class="control-label"><label for="lightX">Horizontal position</label><output id="lightXOut">0.0</output></div>
+              <input id="lightX" type="range" min="-1.5" max="1.5" step="0.1" value="0" />
+            </div>
+            <div class="control">
+              <div class="control-label"><label for="brightness">Brightness</label><output id="brightnessOut">70%</output></div>
+              <input id="brightness" type="range" min="10" max="100" value="70" />
+            </div>
+            <div class="control">
+              <div class="control-label"><label for="lightColor">Light color</label></div>
+              <div class="color-row"><input id="lightColor" type="color" value="#ffc777" /><span>Warm white</span></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><span class="step">03</span><div><h2>Projection</h2><p>Set up the wall</p></div></div>
+            <div class="control">
+              <div class="control-label"><label for="wallDistance">Wall distance</label><output id="wallDistanceOut">5.0</output></div>
+              <input id="wallDistance" type="range" min="0" max="9" step="0.1" value="5" />
+            </div>
+            <div class="control">
+              <div class="control-label"><label for="wallColor">Wall color</label></div>
+              <div class="color-row"><input id="wallColor" type="color" value="#e8dfd0" /><span>Warm plaster</span></div>
+            </div>
+            <p class="hint">Drag to orbit · Scroll to zoom · Right-drag to pan</p>
+          </section>
+        </aside>
+        <section class="viewport-panel">
+          <div class="viewport-toolbar">
+            <div><span class="live-dot"></span><span>3D STUDIO</span><span class="toolbar-divider">/</span><span id="viewLabel">Perspective view</span></div>
+            <button id="homeViewBtn" class="icon-button" title="Reset camera">⌂ <span>Reset view</span></button>
+          </div>
+          <div id="viewport"></div>
+          <div class="viewport-footer">
+            <span><span class="legend-dot lamp-dot"></span> Lamp model</span>
+            <span><span class="legend-dot light-dot"></span> Light source</span>
+            <span><span class="legend-dot wall-dot"></span> Projection wall</span>
+            <span class="footer-note">Interactive preview · Not a physical optics solver</span>
+          </div>
+          <div class="tip-card"><span class="tip-icon">✦</span><div><strong>Experiment with the light</strong><p>Move the source up or sideways and watch how the scene changes. The demo uses real-time 3D shadow mapping.</p></div></div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
