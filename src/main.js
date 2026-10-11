@@ -55,6 +55,16 @@ wall.position.set(0, 1, -5);
 wall.receiveShadow = true;
 scene.add(wall);
 
+// Fine measurement grid overlaid on the wall, aligned with the wall's XY plane.
+const wallGrid = new THREE.GridHelper(8, 32, 0x8d877e, 0xbab2a6);
+wallGrid.rotation.x = Math.PI / 2;
+wallGrid.position.set(0, 1, -4.985);
+wallGrid.scale.set(1, 0.75, 1);
+wallGrid.material.transparent = true;
+wallGrid.material.opacity = 0.32;
+wallGrid.material.depthWrite = false;
+scene.add(wallGrid);
+
 const pointLight = new THREE.PointLight('#ffc777', 38, 18, 1.5);
 pointLight.position.set(0, 0, 0);
 pointLight.castShadow = true;
@@ -203,6 +213,46 @@ function fitModelToScene(object) {
   controls.update();
 }
 
+function updateMeasurements() {
+  const modelSizeEl = document.querySelector('#modelSizeReadout');
+  const modelWallEl = document.querySelector('#modelWallGapReadout');
+  const lightWallEl = document.querySelector('#lightWallDistanceReadout');
+  const shadowEl = document.querySelector('#shadowSizeReadout');
+
+  if (!loadedModel) {
+    modelSizeEl.textContent = '—';
+    modelWallEl.textContent = '—';
+    shadowEl.textContent = '—';
+    return;
+  }
+
+  loadedModel.updateMatrixWorld(true);
+  const bounds = new THREE.Box3().setFromObject(loadedModel);
+  const size = bounds.getSize(new THREE.Vector3());
+  const width = size.x;
+  const height = size.y;
+  const depth = size.z;
+  modelSizeEl.textContent = `${width.toFixed(2)} × ${height.toFixed(2)} × ${depth.toFixed(2)} units`;
+
+  // Wall is a plane at wall.position.z. For this scene it sits on the model's
+  // negative-Z side. A zero gap means the wall plane has reached the nearest
+  // model surface; clamp overlap to zero so the readout never goes negative.
+  const modelFrontZ = bounds.min.z;
+  const gap = Math.max(0, modelFrontZ - wall.position.z);
+  modelWallEl.textContent = `${gap.toFixed(2)} units${gap === 0 ? ' (touching/overlap)' : ''}`;
+
+  const lightWallDistance = Math.abs(pointLight.position.z - wall.position.z);
+  lightWallEl.textContent = `${lightWallDistance.toFixed(2)} units`;
+
+  // Approximate point-source projection magnification. This is only a guide:
+  // it uses model bounding-box dimensions and distance ratios.
+  const lightToModel = Math.max(0.05, Math.abs(pointLight.position.z - bounds.min.z));
+  const magnification = lightWallDistance / lightToModel;
+  const shadowWidth = width * magnification;
+  const shadowHeight = height * magnification;
+  shadowEl.textContent = `${shadowWidth.toFixed(2)} × ${shadowHeight.toFixed(2)} units`;
+}
+
 const fileInput = document.querySelector('#modelFile');
 fileInput.addEventListener('change', async (event) => {
   const file = event.target.files?.[0];
@@ -236,6 +286,7 @@ fileInput.addEventListener('change', async (event) => {
     loadedModel = object;
     lampGroup.add(object);
     status.textContent = `Loaded ${file.name}`;
+    updateMeasurements();
   } catch (error) {
     status.textContent = error.message || 'Could not load this model.';
   }
@@ -254,18 +305,24 @@ function connectRange(id, outId, format, callback) {
 }
 connectRange('lightHeight', 'lightHeightOut', v => v.toFixed(1), v => {
   pointLight.position.y = v; bulb.position.y = v;
+  updateMeasurements();
 });
 connectRange('lightX', 'lightXOut', v => v.toFixed(1), v => {
   pointLight.position.x = v; bulb.position.x = v;
+  updateMeasurements();
 });
 connectRange('lightDepth', 'lightDepthOut', v => v.toFixed(1), v => {
   pointLight.position.z = v; bulb.position.z = v;
+  updateMeasurements();
 });
 connectRange('brightness', 'brightnessOut', v => `${v}%`, v => {
   pointLight.intensity = v * 0.55;
 });
+updateMeasurements();
 connectRange('wallDistance', 'wallDistanceOut', v => `${v.toFixed(1)} m`, v => {
   wall.position.z = -v;
+  wallGrid.position.z = wall.position.z + 0.015;
+  updateMeasurements();
 });
 document.querySelector('#lightColor').addEventListener('input', e => {
   pointLight.color.set(e.target.value);
@@ -275,6 +332,7 @@ document.querySelector('#wallColor').addEventListener('input', e => wallMaterial
 document.querySelector('#resetModelBtn').addEventListener('click', () => {
   fileInput.value = '';
   showDemo();
+  updateMeasurements();
 });
 document.querySelector('#homeViewBtn').addEventListener('click', () => {
   camera.position.set(7, 5, 9);
