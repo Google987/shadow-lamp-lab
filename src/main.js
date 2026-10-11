@@ -50,13 +50,13 @@ grid.position.y = -2.14;
 scene.add(grid);
 
 const wallMaterial = new THREE.MeshStandardMaterial({ color: '#e8dfd0', roughness: 0.95, side: THREE.DoubleSide });
-const wall = new THREE.Mesh(new THREE.PlaneGeometry(8, 6), wallMaterial);
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(12, 9), wallMaterial);
 wall.position.set(0, 1, -5);
 wall.receiveShadow = true;
 scene.add(wall);
 
 // Fine measurement grid overlaid on the wall, aligned with the wall's XY plane.
-const wallGrid = new THREE.GridHelper(8, 32, 0x8d877e, 0xbab2a6);
+const wallGrid = new THREE.GridHelper(12, 48, 0x8d877e, 0xbab2a6);
 wallGrid.rotation.x = Math.PI / 2;
 wallGrid.position.set(0, 1, -4.985);
 wallGrid.scale.set(1, 0.75, 1);
