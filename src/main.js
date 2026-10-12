@@ -38,7 +38,11 @@ scene.add(keyLight);
 
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(30, 30),
-  new THREE.MeshStandardMaterial({ color: '#22262d', roughness: 0.92 })
+  new THREE.MeshStandardMaterial({
+    color: '#22262d', roughness: 0.92, transparent: true,
+    opacity: 0.15,
+    depthWrite: false
+  })
 );
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -2.15;
@@ -49,8 +53,13 @@ const grid = new THREE.GridHelper(20, 40, 0x454b55, 0x30353d);
 grid.position.y = -2.14;
 scene.add(grid);
 
+const wallBaseWidth = 12;
+const wallBaseHeight = 9;
+
+const wallBaseX = 0;
+const wallBaseY = 1;
 const wallMaterial = new THREE.MeshStandardMaterial({ color: '#e8dfd0', roughness: 0.95, side: THREE.DoubleSide });
-const wall = new THREE.Mesh(new THREE.PlaneGeometry(12, 9), wallMaterial);
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(wallBaseWidth, wallBaseHeight), wallMaterial);
 wall.position.set(0, 1, -5);
 wall.receiveShadow = true;
 scene.add(wall);
@@ -58,7 +67,7 @@ scene.add(wall);
 // Fine measurement grid overlaid on the wall, aligned with the wall's XY plane.
 const wallGrid = new THREE.GridHelper(12, 48, 0x8d877e, 0xbab2a6);
 wallGrid.rotation.x = Math.PI / 2;
-wall.position.set(0, 2, -5);
+wallGrid.position.set(0, 1, -4.985);
 wallGrid.scale.set(1, 0.75, 1);
 wallGrid.material.transparent = true;
 wallGrid.material.opacity = 0.32;
@@ -346,6 +355,45 @@ document.querySelector('#screenshotBtn').addEventListener('click', () => {
   link.href = renderer.domElement.toDataURL('image/png');
   link.click();
 });
+
+function updateWallSize(growth) {
+  const width = wallBaseWidth + growth * 2;
+  const height = wallBaseHeight + growth * 2;
+
+  // Resize wall while keeping its center fixed.
+  wall.geometry.dispose();
+  wall.geometry = new THREE.PlaneGeometry(width, height);
+
+  wall.position.x = wallBaseX;
+  wall.position.y = wallBaseY;
+
+  // Resize the grid to cover the wall.
+  wallGrid.geometry.dispose();
+
+  wallGrid.geometry = new THREE.GridHelper(
+    width,
+    Math.round(width * 4),
+    0x8d877e,
+    0xbab2a6
+  ).geometry;
+
+  wallGrid.scale.set(1, height / width, 1);
+  wallGrid.position.set(
+    wallBaseX,
+    wallBaseY,
+    wall.position.z + 0.015
+  );
+
+  document.querySelector('#wallSizeOut').textContent =
+    `${width.toFixed(1)} × ${height.toFixed(1)}`;
+}
+
+document.querySelector('#wallSize').addEventListener('input', (event) => {
+  updateWallSize(Number(event.target.value));
+});
+
+updateWallSize(0);
+
 
 function resize() {
   const width = viewport.clientWidth;
