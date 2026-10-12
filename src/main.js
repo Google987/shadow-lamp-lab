@@ -156,12 +156,30 @@ function clearModel() {
   }
   loadedModel = null;
 }
+
 function showDemo() {
   clearModel();
-  loadedModel = makeDemoLamp();
+
+  const model = makeDemoLamp();
+
+  // Center the demo model around its visual bounding-box center.
+  const bounds = new THREE.Box3().setFromObject(model);
+  const center = bounds.getCenter(new THREE.Vector3());
+  model.position.sub(center);
+
+  // Rotate the pivot rather than the model directly.
+  loadedModel = new THREE.Group();
+  loadedModel.add(model);
   lampGroup.add(loadedModel);
-  document.querySelector('#modelStatus').textContent = 'Showing the built-in demo lamp';
+
+  applyModelRotation();
+
+  document.querySelector('#modelStatus').textContent =
+    'Showing the built-in demo lamp';
+
+  updateMeasurements();
 }
+
 showDemo();
 
 function fitModelToScene(object) {
@@ -291,8 +309,14 @@ fileInput.addEventListener('change', async (event) => {
     }
     clearModel();
     fitModelToScene(object);
-    loadedModel = object;
-    lampGroup.add(object);
+
+    // Wrap the normalized model in a rotation pivot.
+    loadedModel = new THREE.Group();
+    loadedModel.add(object);
+    lampGroup.add(loadedModel);
+
+    applyModelRotation();
+
     status.textContent = `Loaded ${file.name}`;
     updateMeasurements();
   } catch (error) {
