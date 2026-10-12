@@ -411,3 +411,48 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+/* Creator modal interactions */
+const creatorToggle = document.querySelector('#creatorToggle');
+const creatorOverlay = document.querySelector('#creatorOverlay');
+const creatorClose = document.querySelector('#creatorClose');
+
+function openCreatorModal() {
+  creatorOverlay.classList.add('is-open');
+  creatorOverlay.setAttribute('aria-hidden', 'false');
+  creatorToggle.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+  creatorClose.focus();
+}
+
+function closeCreatorModal() {
+  creatorOverlay.classList.remove('is-open');
+  creatorOverlay.setAttribute('aria-hidden', 'true');
+  creatorToggle.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+  creatorToggle.focus();
+}
+
+creatorToggle.addEventListener('click', openCreatorModal);
+creatorClose.addEventListener('click', closeCreatorModal);
+
+// Close when clicking the backdrop, not the modal itself.
+creatorOverlay.addEventListener('click', (event) => {
+  if (event.target === creatorOverlay) {
+    closeCreatorModal();
+  }
+});
+
+// Close with Escape.
+document.addEventListener('keydown', (event) => {
+  if (
+    event.key === 'Escape' &&
+    creatorOverlay.classList.contains('is-open')
+  ) {
+    closeCreatorModal();
+  }
+});
+
+// Automatically update the copyright year.
+document.querySelector('#copyrightYear').textContent =
+  new Date().getFullYear();

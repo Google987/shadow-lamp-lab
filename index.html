@@ -87,7 +87,8 @@
         </aside>
         <section class="viewport-panel">
           <div class="viewport-toolbar">
-            <div><span class="live-dot"></span><span>3D STUDIO</span><span class="toolbar-divider">/</span><span id="viewLabel">Perspective view</span></div>
+            <div><span class="live-dot"></span><span>3D STUDIO</span><span class="toolbar-divider">/</span><span
+                id="viewLabel">Perspective view</span></div>
             <button id="homeViewBtn" class="icon-button" title="Reset camera">⌂ <span>Reset view</span></button>
           </div>
           <div id="viewport"></div>
@@ -96,6 +97,50 @@
             <span><span class="legend-dot light-dot"></span> Light source</span>
             <span><span class="legend-dot wall-dot"></span> Projection wall</span>
             <span class="footer-note">Interactive preview · Not a physical optics solver</span>
+          </div>
+          <!-- Floating creator / support button -->
+          <button id="creatorToggle" class="creator-toggle" type="button" aria-label="About and support the creator"
+            aria-haspopup="dialog" aria-expanded="false">
+            ♥
+          </button>
+        
+          <!-- Creator information modal -->
+          <div id="creatorOverlay" class="creator-overlay" aria-hidden="true">
+            <section class="creator-modal" role="dialog" aria-modal="true" aria-labelledby="creatorTitle">
+              <button id="creatorClose" class="creator-close" type="button" aria-label="Close dialog">×</button>
+        
+              <div class="creator-modal-mark">SL</div>
+        
+              <span class="creator-label">MADE BY</span>
+              <h2 id="creatorTitle">Arif Khan</h2>
+              <p class="creator-caption">
+                Built with curiosity, light, and code.
+              </p>
+        
+              <div class="creator-links">
+                <a href="https://github.com/Google987/shadow-lamp-lab" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://www.instagram.com/arif_decrypted" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+                <a href="https://www.linkedin.com/in/arif-decrypted/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                <a href="https://x.com/arif_decrypted" target="_blank" rel="noopener noreferrer">Twitter (X) ↗</a>
+              </div>
+        
+              <div class="support-links">
+                <a class="support-button" href="https://buymeacoffee.com/alittlecoding" target="_blank" rel="noopener noreferrer">☕ Buy me a
+                  coffee</a>
+        
+                <a class="upi-button" href="upi://pay?pa=arif77753-1@oksbi&amp;pn=Arif%20Khan&amp;cu=INR">♥ Support via UPI</a>
+        
+                <img class="upi-qr" src="/arif-upi-qr.png" alt="Scan to support Arif Khan via UPI" loading="lazy" />
+        
+                <span class="support-caption">
+                  If this tool helped you, consider supporting its development.
+                </span>
+              </div>
+        
+              <div class="creator-copyright">
+                © <span id="copyrightYear"></span> Arif Khan · Shadow Lamp Lab
+              </div>
+            </section>
           </div>
         </section>
       </main>
