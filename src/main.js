@@ -311,6 +311,69 @@ function connectRange(id, outId, format, callback) {
   input.addEventListener('input', update);
   update();
 }
+
+// Model rotation controls
+function applyModelRotation() {
+  if (!loadedModel) return;
+
+  const x = Number(
+    document.querySelector('#rotationX').value
+  );
+  const y = Number(
+    document.querySelector('#rotationY').value
+  );
+  const z = Number(
+    document.querySelector('#rotationZ').value
+  );
+
+  loadedModel.rotation.set(
+    THREE.MathUtils.degToRad(x),
+    THREE.MathUtils.degToRad(y),
+    THREE.MathUtils.degToRad(z)
+  );
+
+  updateMeasurements();
+}
+
+// X-axis rotation
+connectRange(
+  'rotationX',
+  'rotationXOut',
+  v => `${v}°`,
+  applyModelRotation
+);
+
+// Y-axis rotation
+connectRange(
+  'rotationY',
+  'rotationYOut',
+  v => `${v}°`,
+  applyModelRotation
+);
+
+// Z-axis rotation
+connectRange(
+  'rotationZ',
+  'rotationZOut',
+  v => `${v}°`,
+  applyModelRotation
+);
+
+// Reset all rotation axes
+document
+  .querySelector('#resetRotationBtn')
+  .addEventListener('click', () => {
+    document.querySelector('#rotationX').value = 0;
+    document.querySelector('#rotationY').value = 0;
+    document.querySelector('#rotationZ').value = 0;
+
+    document.querySelector('#rotationXOut').textContent = '0°';
+    document.querySelector('#rotationYOut').textContent = '0°';
+    document.querySelector('#rotationZOut').textContent = '0°';
+
+    applyModelRotation();
+  });
+
 connectRange('lightHeight', 'lightHeightOut', v => v.toFixed(1), v => {
   pointLight.position.y = v; bulb.position.y = v;
   updateMeasurements();

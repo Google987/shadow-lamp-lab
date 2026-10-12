@@ -56,7 +56,49 @@
             </div>
           </section>
           <section class="panel">
-            <div class="section-heading"><span class="step">03</span><div><h2>Projection</h2><p>Set up the wall</p></div></div>
+            <div class="section-heading">
+              <span class="step">03</span>
+              <div>
+                <h2>Model rotation</h2>
+                <p>Rotate the object on three axes</p>
+              </div>
+            </div>
+
+            <div class="control">
+              <div class="control-label">
+                <label for="rotationX">X axis · Tilt</label>
+                <output id="rotationXOut">0°</output>
+              </div>
+              <input id="rotationX" type="range" min="-180" max="180" step="1" value="0" />
+            </div>
+
+            <div class="control">
+              <div class="control-label">
+                <label for="rotationY">Y axis · Spin</label>
+                <output id="rotationYOut">0°</output>
+              </div>
+              <input id="rotationY" type="range" min="-180" max="180" step="1" value="0" />
+            </div>
+
+            <div class="control">
+              <div class="control-label">
+                <label for="rotationZ">Z axis · Roll</label>
+                <output id="rotationZOut">0°</output>
+              </div>
+              <input id="rotationZ" type="range" min="-180" max="180" step="1" value="0" />
+            </div>
+
+            <button id="resetRotationBtn" class="button button-outline full-width" type="button">
+              Reset rotation
+            </button>
+
+            <p class="measurement-note">
+              Rotation affects the lamp model only. The light source,
+              projection wall, and camera remain independent.
+            </p>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><span class="step">04</span><div><h2>Projection</h2><p>Set up the wall</p></div></div>
             <div class="control">
               <div class="control-label"><label for="wallDistance">Wall distance</label><output id="wallDistanceOut">5.0</output></div>
               <input id="wallDistance" type="range" min="0" max="9" step="0.1" value="5" />
