@@ -28,7 +28,6 @@ controls.target.set(0, 0, 0);
 scene.add(new THREE.HemisphereLight(0xdde7ff, 0x29211b, 1.3));
 const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
 keyLight.position.set(4, 8, 5);
-keyLight.castShadow = true;
 keyLight.shadow.mapSize.set(2048, 2048);
 keyLight.shadow.camera.left = -8;
 keyLight.shadow.camera.right = 8;
