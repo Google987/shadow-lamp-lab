@@ -58,7 +58,7 @@ scene.add(wall);
 // Fine measurement grid overlaid on the wall, aligned with the wall's XY plane.
 const wallGrid = new THREE.GridHelper(12, 48, 0x8d877e, 0xbab2a6);
 wallGrid.rotation.x = Math.PI / 2;
-wallGrid.position.set(0, 1, -4.985);
+wall.position.set(0, 2, -5);
 wallGrid.scale.set(1, 0.75, 1);
 wallGrid.material.transparent = true;
 wallGrid.material.opacity = 0.32;
