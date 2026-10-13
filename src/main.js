@@ -10,7 +10,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('#171a20');
 
 const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-camera.position.set(7, 5, 9);
+camera.position.set(0, 0, 9);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -235,7 +235,7 @@ function fitModelToScene(object) {
   pointLight.position.set(0, 0, 0);
   bulb.position.copy(pointLight.position);
   controls.target.set(0, 0, 0);
-  camera.position.set(5.2, 3.5, 7.2);
+  camera.position.set(0, 0, 9);
   controls.update();
 }
 
@@ -430,7 +430,7 @@ document.querySelector('#resetModelBtn').addEventListener('click', () => {
   updateMeasurements();
 });
 document.querySelector('#homeViewBtn').addEventListener('click', () => {
-  camera.position.set(7, 5, 9);
+  camera.position.set(0, 0, 9);
   controls.target.set(0, 0, 0);
   controls.update();
 });
