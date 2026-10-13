@@ -31,6 +31,13 @@
             </label>
             <div id="modelStatus" class="status-line">Showing the built-in demo lamp</div>
             <button id="resetModelBtn" class="button button-outline full-width">Reset demo model</button>
+            <div class="control">
+              <div class="control-label">
+                <label for="modelScale">Model scale</label>
+                <output id="modelScaleOut">1.00×</output>
+              </div>
+              <input id="modelScale" type="range" min="0.25" max="3" step="0.05" value="1" />
+            </div>
           </section>
           <section class="panel">
             <div class="section-heading"><span class="step">02</span><div><h2>Light source</h2><p>Move light inside the shade</p></div></div>

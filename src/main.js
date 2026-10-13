@@ -398,6 +398,17 @@ document
     applyModelRotation();
   });
 
+// Model scale control
+connectRange('modelScale', 'modelScaleOut',
+  v => `${v.toFixed(2)}×`,
+  v => {
+    if (!loadedModel) return;
+
+    loadedModel.scale.setScalar(v);
+    updateMeasurements();
+  }
+);
+
 connectRange('lightHeight', 'lightHeightOut', v => v.toFixed(1), v => {
   pointLight.position.y = v; bulb.position.y = v;
   updateMeasurements();
