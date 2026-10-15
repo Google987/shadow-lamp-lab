@@ -4,7 +4,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { inject } from '@vercel/analytics';
 
+inject();
 const viewport = document.querySelector('#viewport');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#171a20');
