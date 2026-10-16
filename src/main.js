@@ -90,6 +90,8 @@ scene.add(bulb);
 const lampGroup = new THREE.Group();
 scene.add(lampGroup);
 let loadedModel = null;
+// Millimeters represented by one scene unit for the loaded STL.
+let stlMmPerSceneUnit = null;
 
 function makeDemoLamp() {
   const group = new THREE.Group();
@@ -160,6 +162,8 @@ function clearModel() {
 }
 
 function showDemo() {
+  stlMmPerSceneUnit = null;
+
   clearModel();
 
   const model = makeDemoLamp();
@@ -250,6 +254,7 @@ function updateMeasurements() {
   if (!loadedModel) {
     modelSizeEl.textContent = '—';
     modelWallEl.textContent = '—';
+    lightWallEl.textContent = '—';
     shadowEl.textContent = '—';
     return;
   }
@@ -260,25 +265,61 @@ function updateMeasurements() {
   const width = size.x;
   const height = size.y;
   const depth = size.z;
-  modelSizeEl.textContent = `${width.toFixed(2)} × ${height.toFixed(2)} × ${depth.toFixed(2)} units`;
 
-  // Wall is a plane at wall.position.z. For this scene it sits on the model's
-  // negative-Z side. A zero gap means the wall plane has reached the nearest
-  // model surface; clamp overlap to zero so the readout never goes negative.
+  // Calculate the gap between the model and the wall.
   const modelFrontZ = bounds.min.z;
   const gap = Math.max(0, modelFrontZ - wall.position.z);
-  modelWallEl.textContent = `${gap.toFixed(2)} units${gap === 0 ? ' (touching/overlap)' : ''}`;
 
-  const lightWallDistance = Math.abs(pointLight.position.z - wall.position.z);
-  lightWallEl.textContent = `${lightWallDistance.toFixed(2)} units`;
+  // Calculate light-to-wall distance.
+  const lightWallDistance = Math.abs(
+    pointLight.position.z - wall.position.z
+  );
 
-  // Approximate point-source projection magnification. This is only a guide:
-  // it uses model bounding-box dimensions and distance ratios.
-  const lightToModel = Math.max(0.05, Math.abs(pointLight.position.z - bounds.min.z));
+  // Estimate shadow dimensions.
+  const lightToModel = Math.max(
+    0.05,
+    Math.abs(pointLight.position.z - bounds.min.z)
+  );
+
   const magnification = lightWallDistance / lightToModel;
   const shadowWidth = width * magnification;
   const shadowHeight = height * magnification;
-  shadowEl.textContent = `${shadowWidth.toFixed(2)} × ${shadowHeight.toFixed(2)} units`;
+
+  // Display millimeters for STL files, scene units otherwise.
+  if (stlMmPerSceneUnit !== null) {
+    const toMm = value => value * stlMmPerSceneUnit;
+
+    modelSizeEl.textContent =
+      `${toMm(width).toFixed(2)} × ` +
+      `${toMm(height).toFixed(2)} × ` +
+      `${toMm(depth).toFixed(2)} mm`;
+
+    modelWallEl.textContent =
+      `${toMm(gap).toFixed(2)} mm` +
+      (gap === 0 ? ' (touching/overlap)' : '');
+
+    lightWallEl.textContent =
+      `${toMm(lightWallDistance).toFixed(2)} mm`;
+
+    shadowEl.textContent =
+      `${toMm(shadowWidth).toFixed(2)} × ` +
+      `${toMm(shadowHeight).toFixed(2)} mm`;
+  } else {
+    modelSizeEl.textContent =
+      `${width.toFixed(2)} × ${height.toFixed(2)} × ` +
+      `${depth.toFixed(2)} units`;
+
+    modelWallEl.textContent =
+      `${gap.toFixed(2)} units` +
+      (gap === 0 ? ' (touching/overlap)' : '');
+
+    lightWallEl.textContent =
+      `${lightWallDistance.toFixed(2)} units`;
+
+    shadowEl.textContent =
+      `${shadowWidth.toFixed(2)} × ` +
+      `${shadowHeight.toFixed(2)} units`;
+  }
 }
 
 const fileInput = document.querySelector('#modelFile');
@@ -309,6 +350,26 @@ fileInput.addEventListener('change', async (event) => {
     } else {
       throw new Error('Choose an STL, OBJ, GLB, or GLTF file.');
     }
+    // STL coordinates are assumed to be millimeters.
+    // Capture the original dimensions before normalization.
+    if (ext === 'stl') {
+      object.updateMatrixWorld(true);
+
+      const originalBounds = new THREE.Box3().setFromObject(object);
+      const originalSize = originalBounds.getSize(new THREE.Vector3());
+
+      const originalMaxDim = Math.max(
+        originalSize.x,
+        originalSize.y,
+        originalSize.z
+      );
+
+      // fitModelToScene normalizes the longest dimension to 2.6 units.
+      stlMmPerSceneUnit = originalMaxDim / 2.6;
+    } else {
+      stlMmPerSceneUnit = null;
+    }
+
     clearModel();
     fitModelToScene(object);
 
