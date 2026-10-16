@@ -493,6 +493,102 @@ document.querySelector('#wallSize').addEventListener('input', (event) => {
 
 updateWallSize(0);
 
+// Double-click a displayed slider value to edit it.
+function makeValueEditable(sliderId, outputId) {
+  const slider = document.getElementById(sliderId);
+  const output = document.getElementById(outputId);
+
+  if (!slider || !output) return;
+
+  output.title = 'Double-click to edit';
+
+  output.addEventListener('dblclick', () => {
+    if (output.querySelector('input')) return;
+
+    const editor = document.createElement('input');
+    editor.type = 'number';
+    editor.className = 'value-editor';
+    editor.min = slider.min;
+    editor.max = slider.max;
+    editor.step = slider.step || '1';
+    editor.value = slider.value;
+
+    output.classList.add('editing');
+    output.textContent = '';
+    output.appendChild(editor);
+
+    editor.focus();
+    editor.select();
+
+    let finished = false;
+
+    function finish(save) {
+      if (finished) return;
+      finished = true;
+
+      if (save && editor.value.trim() !== '') {
+        let value = Number(editor.value);
+
+        if (Number.isFinite(value)) {
+          const min = Number(slider.min);
+          const max = Number(slider.max);
+          const step = Number(slider.step);
+
+          value = Math.max(min, Math.min(max, value));
+
+          if (step > 0) {
+            value = min + Math.round((value - min) / step) * step;
+          }
+
+          value = Math.max(min, Math.min(max, value));
+
+          slider.value = String(Number(value.toFixed(5)));
+
+          // Runs your existing callbacks and refreshes the 3D scene.
+          slider.dispatchEvent(
+            new Event('input', { bubbles: true })
+          );
+        } else {
+          slider.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      } else {
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+
+      output.classList.remove('editing');
+    }
+
+    editor.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        finish(true);
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        finish(false);
+      }
+    });
+
+    editor.addEventListener('blur', () => finish(true));
+  });
+}
+
+// Enable editing for numeric slider values.
+[
+  ['modelScale', 'modelScaleOut'],
+  ['lightHeight', 'lightHeightOut'],
+  ['lightX', 'lightXOut'],
+  ['lightDepth', 'lightDepthOut'],
+  ['brightness', 'brightnessOut'],
+  ['rotationX', 'rotationXOut'],
+  ['rotationY', 'rotationYOut'],
+  ['rotationZ', 'rotationZOut'],
+  ['wallDistance', 'wallDistanceOut'],
+].forEach(([sliderId, outputId]) => {
+  makeValueEditable(sliderId, outputId);
+});
+
 
 function resize() {
   const width = viewport.clientWidth;

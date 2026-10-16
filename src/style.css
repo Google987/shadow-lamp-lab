@@ -774,3 +774,32 @@ body {
       transition: none;
     }
   }
+
+  .control-label output {
+    cursor: text;
+    border-radius: 4px;
+    padding: 3px 5px;
+    transition: background 0.15s ease;
+  }
+  
+  .control-label output:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .control-label output.editing {
+    outline: 1px solid #e9c18e;
+    background: #22252c;
+  }
+
+  .value-editor {
+    width: 64px;
+    padding: 2px 4px;
+    border: 1px solid #e9c18e;
+    border-radius: 4px;
+    background: #22252c;
+    color: #f3c98f;
+    font: inherit;
+    font-size: inherit;
+    text-align: right;
+    outline: none;
+  }
